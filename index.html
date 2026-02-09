@@ -6,91 +6,117 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-    body {
-        margin: 0;
-        min-height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        background: #000000;
-        color: #ffffff;
-        text-align: center;
-    }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: #000000;
+    color: #ffffff;
+    text-align: center;
+  }
 
-    .container {
-        max-width: 700px;
-        padding: 40px 20px;
-    }
+  .container {
+    max-width: 700px;
+    padding: 40px 20px;
+    display: none;
+  }
 
-    h1 {
-        font-weight: 600;
-        letter-spacing: 1px;
-        margin-bottom: 20px;
-        font-size: 2.2rem;
-    }
+  h1 {
+    font-weight: 600;
+    letter-spacing: 1px;
+    margin-bottom: 20px;
+    font-size: 2.2rem;
+  }
 
-    .start {
-        margin-bottom: 42px;
-        font-size: 0.95rem;
-        line-height: 1.45;
-        opacity: 0.85;
-    }
+  .start {
+    margin-bottom: 42px;
+    font-size: 0.95rem;
+    line-height: 1.45;
+    opacity: 0.85;
+  }
 
-    .start strong {
-        font-weight: 600;
-    }
+  .start strong {
+    font-weight: 600;
+  }
 
-    .format-note {
-        margin-top: 6px;
-        font-size: 0.8rem;
-        opacity: 0.7;
-        letter-spacing: 0.4px;
-    }
+  .format-note {
+    margin-top: 6px;
+    font-size: 0.8rem;
+    opacity: 0.7;
+    letter-spacing: 0.4px;
+  }
 
-    .time {
-        font-size: 2.3rem;
-        margin: 18px 0 4px;
-        font-weight: 600;
-    }
+  .time {
+    font-size: 2.3rem;
+    margin: 18px 0 4px;
+    font-weight: 600;
+  }
 
-    .time.days {
-        font-size: 2.7rem;
-    }
+  .time.days {
+    font-size: 2.7rem;
+  }
 
-    .label {
-        font-size: 0.8rem;
-        margin-bottom: 16px;
-        letter-spacing: 1.3px;
-        text-transform: uppercase;
-        opacity: 0.7;
-    }
+  .label {
+    font-size: 0.8rem;
+    margin-bottom: 16px;
+    letter-spacing: 1.3px;
+    text-transform: uppercase;
+    opacity: 0.7;
+  }
 
-    .quote {
-        margin-top: 60px;
-        font-size: 1.05rem;
-        line-height: 1.6;
-        font-style: italic;
-        opacity: 0.85;
-    }
+  .quote {
+    margin-top: 60px;
+    font-size: 1.05rem;
+    line-height: 1.6;
+    font-style: italic;
+    opacity: 0.85;
+  }
 
-    .author {
-        margin-top: 14px;
-        font-size: 0.95rem;
-        opacity: 0.75;
-        letter-spacing: 0.5px;
-    }
+  .author {
+    margin-top: 14px;
+    font-size: 0.95rem;
+    opacity: 0.75;
+    letter-spacing: 0.5px;
+  }
 
-    .ksa-now {
-        position: fixed;
-        top: 18px;
-        right: 18px;
-        font-size: 0.9rem;
-        letter-spacing: 0.5px;
-        opacity: 0.85;
-        text-align: right;
-        white-space: nowrap;
-    }
+  .ksa-now {
+    position: fixed;
+    top: 18px;
+    right: 18px;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+    opacity: 0.85;
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  .lock {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .password-input {
+    padding: 14px 18px;
+    font-size: 16px;
+    border-radius: 4px;
+    border: 1px solid rgba(255,255,255,0.4);
+    outline: none;
+    background: #000000;
+    color: #ffffff;
+    text-align: center;
+    letter-spacing: 2px;
+  }
+
+  .password-input::placeholder {
+    color: rgba(255,255,255,0.6);
+    letter-spacing: normal;
+  }
 </style>
 </head>
 
@@ -98,77 +124,104 @@
 
 <div class="ksa-now" id="ksaNow">KSA (AST): --:--:--</div>
 
-<div class="container">
-    <h1>The Count</h1>
+<div class="lock" id="lock">
+  <input type="password" class="password-input" id="pw" placeholder="Enter password" />
+</div>
 
-    <div class="start">
-        Start Date & Time (KSA):<br>
-        <strong>09 February 2026, 12:30 AST</strong>
-        <div class="format-note">Times are shown in 24-hour format</div>
-    </div>
+<div class="container" id="content">
+  <h1>The Count</h1>
 
-    <div class="time days" id="days">0</div>
-    <div class="label">Days</div>
+  <div class="start">
+    Start Date & Time (KSA):<br>
+    <strong>09 February 2026, 12:30 AST</strong>
+    <div class="format-note">Times are shown in 24-hour format</div>
+  </div>
 
-    <div class="time" id="hours">0</div>
-    <div class="label">Hours</div>
+  <div class="time days" id="days">0</div>
+  <div class="label">Days</div>
 
-    <div class="time" id="minutes">0</div>
-    <div class="label">Minutes</div>
+  <div class="time" id="hours">0</div>
+  <div class="label">Hours</div>
 
-    <div class="time" id="seconds">0</div>
-    <div class="label">Seconds</div>
+  <div class="time" id="minutes">0</div>
+  <div class="label">Minutes</div>
 
-    <div class="quote">
-        “You are either a product of your struggles, or a victim of your desires.”
-        <div class="author">— Sajid Ali</div>
-    </div>
+  <div class="time" id="seconds">0</div>
+  <div class="label">Seconds</div>
+
+  <div class="quote">
+    “You are either a product of your struggles, or a victim of your desires.”
+    <div class="author">— Sajid Ali</div>
+  </div>
 </div>
 
 <script>
-    const startTime = Date.UTC(2026, 1, 9, 9, 30, 0);
+  // Set your password here
+  const correctPassword = "Salafi";
 
-    const ksaFormatter = new Intl.DateTimeFormat("en-GB", {
-        timeZone: "Asia/Riyadh",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-        hour12: false
-    });
+  const pwInput = document.getElementById("pw");
+  const lock = document.getElementById("lock");
+  const content = document.getElementById("content");
 
-    function updateKsaClock() {
-        document.getElementById("ksaNow").textContent =
-            "KSA (AST): " + ksaFormatter.format(new Date());
+  pwInput.focus();
+
+  pwInput.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") {
+      if (pwInput.value !== correctPassword) {
+        alert("Incorrect password.");
+        pwInput.value = "";
+        pwInput.focus();
+      } else {
+        lock.style.display = "none";
+        content.style.display = "block";
+      }
+    }
+  });
+
+  // Start: 09 Feb 2026, 12:30 AST (UTC+3) = 09 Feb 2026, 09:30 UTC
+  const startTime = Date.UTC(2026, 1, 9, 9, 30, 0);
+
+  const ksaFormatter = new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Asia/Riyadh",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false
+  });
+
+  function updateKsaClock() {
+    document.getElementById("ksaNow").textContent = "KSA (AST): " + ksaFormatter.format(new Date());
+  }
+
+  function updateTimer() {
+    const nowUtc = Date.now();
+    const diffMs = nowUtc - startTime;
+
+    if (diffMs < 0) {
+      document.getElementById("days").textContent = "Not started";
+      document.getElementById("hours").textContent = "";
+      document.getElementById("minutes").textContent = "";
+      document.getElementById("seconds").textContent = "";
+      return;
     }
 
-    function updateTimer() {
-        const nowUtc = Date.now();
-        const diffMs = nowUtc - startTime;
+    const totalSeconds = Math.floor(diffMs / 1000);
 
-        if (diffMs < 0) {
-            document.getElementById("days").textContent = "Not started";
-            document.getElementById("hours").textContent = "";
-            document.getElementById("minutes").textContent = "";
-            document.getElementById("seconds").textContent = "";
-            return;
-        }
+    document.getElementById("days").textContent = Math.floor(totalSeconds / 86400);
+    document.getElementById("hours").textContent = Math.floor((totalSeconds % 86400) / 3600);
+    document.getElementById("minutes").textContent = Math.floor((totalSeconds % 3600) / 60);
+    document.getElementById("seconds").textContent = totalSeconds % 60;
+  }
 
-        const totalSeconds = Math.floor(diffMs / 1000);
+  function tick() {
+    updateKsaClock();
+    updateTimer();
+  }
 
-        document.getElementById("days").textContent = Math.floor(totalSeconds / 86400);
-        document.getElementById("hours").textContent = Math.floor((totalSeconds % 86400) / 3600);
-        document.getElementById("minutes").textContent = Math.floor((totalSeconds % 3600) / 60);
-        document.getElementById("seconds").textContent = totalSeconds % 60;
-    }
-
-    function tick() {
-        updateKsaClock();
-        updateTimer();
-    }
-
-    tick();
-    setInterval(tick, 1000);
+  tick();
+  setInterval(tick, 1000);
 </script>
 
 </body>
 </html>
+
