@@ -7,10 +7,16 @@
 
 <style>
   :root{
-    --bg: #000000;
-    --text: #ffffff;
+    --bg: #07070a;
+    --text: rgba(255,255,255,0.92);
     --muted: rgba(255,255,255,0.72);
-    --muted2: rgba(255,255,255,0.55);
+    --muted2: rgba(255,255,255,0.56);
+
+    --panel: rgba(255,255,255,0.06);
+    --panelBorder: rgba(255,255,255,0.10);
+
+    --accent: rgba(255, 60, 60, 0.55);
+    --accentSoft: rgba(255, 60, 60, 0.18);
   }
 
   body{
@@ -23,11 +29,60 @@
     background: var(--bg);
     color: var(--text);
     text-align: center;
+    overflow: hidden;
+  }
+
+  /* Minimal theme background */
+  .theme-layer{
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(900px 520px at 50% 35%, rgba(255,255,255,0.06), rgba(0,0,0,0) 60%),
+      radial-gradient(780px 460px at 18% 18%, var(--accentSoft), rgba(0,0,0,0) 62%),
+      radial-gradient(820px 520px at 86% 78%, rgba(255,255,255,0.045), rgba(0,0,0,0) 62%),
+      linear-gradient(180deg, #060609 0%, #000000 55%, #050508 100%);
+  }
+
+  /* Soft grain, subtle and not busy */
+  .theme-layer::after{
+    content: "";
+    position: absolute;
+    inset: 0;
+    opacity: 0.07;
+    background-image:
+      repeating-linear-gradient(0deg, rgba(255,255,255,0.05), rgba(255,255,255,0.05) 1px, rgba(0,0,0,0) 2px, rgba(0,0,0,0) 6px),
+      repeating-linear-gradient(90deg, rgba(255,255,255,0.03), rgba(255,255,255,0.03) 1px, rgba(0,0,0,0) 2px, rgba(0,0,0,0) 7px);
+    mix-blend-mode: overlay;
+  }
+
+  /* Accent glow behind content, gentle and controlled */
+  .accent-glow{
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .accent-glow::before{
+    content: "";
+    position: absolute;
+    width: 720px;
+    height: 720px;
+    left: 50%;
+    top: 42%;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, var(--accent) 0%, rgba(255,60,60,0.10) 35%, rgba(0,0,0,0) 70%);
+    filter: blur(34px);
+    opacity: 0.22;
   }
 
   .container{
     width: min(720px, 92vw);
     padding: 44px 18px 46px;
+    position: relative;
+    z-index: 1;
   }
 
   h1{
@@ -37,8 +92,20 @@
     letter-spacing: 0.6px;
   }
 
+  /* Slight glass card for the start section */
+  .start-card{
+    margin: 0 auto 18px;
+    width: min(640px, 92vw);
+    padding: 16px 14px;
+    border-radius: 16px;
+    background: var(--panel);
+    border: 1px solid var(--panelBorder);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
   .start{
-    margin: 0 0 34px;
+    margin: 0;
     font-size: 0.95rem;
     line-height: 1.55;
     color: var(--muted);
@@ -56,8 +123,36 @@
     letter-spacing: 0.2px;
   }
 
+  .ksa-now-inline{
+    margin: 12px 0 0;
+    font-size: 0.92rem;
+    letter-spacing: 0.25px;
+    color: var(--muted);
+  }
+
+  .ksa-now-inline strong{
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .metrics{
+    margin-top: 18px;
+  }
+
   .metric{
     margin: 20px 0;
+  }
+
+  /* Soft panel behind each number for readability */
+  .time-wrap{
+    display: inline-block;
+    padding: 12px 18px;
+    border-radius: 18px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.35);
   }
 
   .time{
@@ -74,7 +169,7 @@
   }
 
   .label{
-    margin-top: 8px;
+    margin-top: 10px;
     font-size: 0.78rem;
     letter-spacing: 1.6px;
     text-transform: uppercase;
@@ -97,64 +192,71 @@
     letter-spacing: 0.4px;
   }
 
-  .ksa-now{
-    position: fixed;
-    top: 16px;
-    right: 16px;
-    font-size: 0.9rem;
-    letter-spacing: 0.3px;
-    color: var(--muted);
-    white-space: nowrap;
-    text-align: right;
-  }
-
-  /* Mobile tightening */
   @media (max-width: 420px){
     h1{ font-size: 1.75rem; }
     .time{ font-size: 2.35rem; }
     .time.days{ font-size: 2.7rem; }
     .quote{ font-size: 1.0rem; }
-    .ksa-now{ top: 12px; right: 12px; font-size: 0.86rem; }
+    .ksa-now-inline{ font-size: 0.88rem; }
+    .time-wrap{ padding: 11px 16px; border-radius: 16px; }
+    .start-card{ border-radius: 14px; }
   }
 </style>
 </head>
 
 <body>
 
-<div class="ksa-now" id="ksaNow">KSA (AST): --:--:--</div>
+<div class="theme-layer" aria-hidden="true"></div>
+<div class="accent-glow" aria-hidden="true"></div>
 
 <div class="container">
   <h1>The Count</h1>
 
-  <div class="start">
-    Start Date & Time (KSA):<br>
-    <strong>09 February 2026, 12:30 AST</strong>
-    <div class="format-note">Times are shown in 24-hour format</div>
+  <div class="start-card">
+    <div class="start">
+      Start Date & Time (KSA):<br>
+      <strong>09 February 2026, 12:30 AST</strong>
+      <div class="format-note">Times are shown in 24-hour format</div>
+    </div>
+
+    <div class="ksa-now-inline" id="ksaNowLine">
+      KSA (AST): <strong>00:00:00</strong> • <span id="ksaDate">01 January 1970</span>
+    </div>
   </div>
 
-  <div class="metric">
-    <div class="time days" id="days">0</div>
-    <div class="label">Days</div>
-  </div>
+  <div class="metrics">
+    <div class="metric">
+      <div class="time-wrap">
+        <div class="time days" id="days">0</div>
+      </div>
+      <div class="label">Days</div>
+    </div>
 
-  <div class="metric">
-    <div class="time" id="hours">0</div>
-    <div class="label">Hours</div>
-  </div>
+    <div class="metric">
+      <div class="time-wrap">
+        <div class="time" id="hours">0</div>
+      </div>
+      <div class="label">Hours</div>
+    </div>
 
-  <div class="metric">
-    <div class="time" id="minutes">0</div>
-    <div class="label">Minutes</div>
-  </div>
+    <div class="metric">
+      <div class="time-wrap">
+        <div class="time" id="minutes">0</div>
+      </div>
+      <div class="label">Minutes</div>
+    </div>
 
-  <div class="metric">
-    <div class="time" id="seconds">0</div>
-    <div class="label">Seconds</div>
+    <div class="metric">
+      <div class="time-wrap">
+        <div class="time" id="seconds">0</div>
+      </div>
+      <div class="label">Seconds</div>
+    </div>
   </div>
 
   <div class="quote">
     “You are either a product of your struggles, or a victim of your desires.”
-    <div class="author">— Sajid Ali</div>
+    <div class="author">Sajid Ali</div>
   </div>
 </div>
 
@@ -162,7 +264,7 @@
   // Start: 09 Feb 2026, 12:30 AST (UTC+3) = 09 Feb 2026, 09:30 UTC
   const startTime = Date.UTC(2026, 1, 9, 9, 30, 0);
 
-  const ksaFormatter = new Intl.DateTimeFormat("en-GB", {
+  const ksaTimeFormatter = new Intl.DateTimeFormat("en-GB", {
     timeZone: "Asia/Riyadh",
     hour: "2-digit",
     minute: "2-digit",
@@ -170,8 +272,20 @@
     hour12: false
   });
 
-  function updateKsaClock() {
-    document.getElementById("ksaNow").textContent = "KSA (AST): " + ksaFormatter.format(new Date());
+  const ksaDateFormatter = new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Asia/Riyadh",
+    day: "2-digit",
+    month: "long",
+    year: "numeric"
+  });
+
+  function updateKsaDateTime() {
+    const now = new Date();
+    const timeText = ksaTimeFormatter.format(now);
+    const dateText = ksaDateFormatter.format(now);
+
+    document.querySelector("#ksaNowLine strong").textContent = timeText;
+    document.getElementById("ksaDate").textContent = dateText;
   }
 
   function updateTimer() {
@@ -195,7 +309,7 @@
   }
 
   function tick() {
-    updateKsaClock();
+    updateKsaDateTime();
     updateTimer();
   }
 
@@ -205,3 +319,4 @@
 
 </body>
 </html>
+
