@@ -7,16 +7,16 @@
 
 <style>
   :root{
-    --bg: #07070a;
+    --bgTop: #121214;
+    --bgMid: #0e0e10;
+    --bgBottom: #0b0b0d;
+
     --text: rgba(255,255,255,0.92);
     --muted: rgba(255,255,255,0.72);
     --muted2: rgba(255,255,255,0.56);
 
     --panel: rgba(255,255,255,0.06);
     --panelBorder: rgba(255,255,255,0.10);
-
-    --accent: rgba(255, 60, 60, 0.55);
-    --accentSoft: rgba(255, 60, 60, 0.18);
   }
 
   body{
@@ -26,56 +26,31 @@
     justify-content: center;
     align-items: center;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    background: var(--bg);
+    background: linear-gradient(180deg, var(--bgTop), var(--bgMid), var(--bgBottom));
     color: var(--text);
     text-align: center;
     overflow: hidden;
   }
 
-  /* Minimal theme background */
+  /* Soft background texture, extremely subtle */
   .theme-layer{
     position: fixed;
     inset: 0;
     z-index: 0;
     pointer-events: none;
     background:
-      radial-gradient(900px 520px at 50% 35%, rgba(255,255,255,0.06), rgba(0,0,0,0) 60%),
-      radial-gradient(780px 460px at 18% 18%, var(--accentSoft), rgba(0,0,0,0) 62%),
-      radial-gradient(820px 520px at 86% 78%, rgba(255,255,255,0.045), rgba(0,0,0,0) 62%),
-      linear-gradient(180deg, #060609 0%, #000000 55%, #050508 100%);
+      radial-gradient(1000px 600px at 50% 30%, rgba(255,255,255,0.04), transparent 60%),
+      radial-gradient(900px 600px at 80% 80%, rgba(255,255,255,0.025), transparent 65%);
   }
 
-  /* Soft grain, subtle and not busy */
   .theme-layer::after{
     content: "";
     position: absolute;
     inset: 0;
-    opacity: 0.07;
+    opacity: 0.035;
     background-image:
-      repeating-linear-gradient(0deg, rgba(255,255,255,0.05), rgba(255,255,255,0.05) 1px, rgba(0,0,0,0) 2px, rgba(0,0,0,0) 6px),
-      repeating-linear-gradient(90deg, rgba(255,255,255,0.03), rgba(255,255,255,0.03) 1px, rgba(0,0,0,0) 2px, rgba(0,0,0,0) 7px);
+      repeating-linear-gradient(0deg, rgba(255,255,255,0.04), rgba(255,255,255,0.04) 1px, transparent 2px, transparent 6px);
     mix-blend-mode: overlay;
-  }
-
-  /* Accent glow behind content, gentle and controlled */
-  .accent-glow{
-    position: fixed;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-  }
-
-  .accent-glow::before{
-    content: "";
-    position: absolute;
-    width: 720px;
-    height: 720px;
-    left: 50%;
-    top: 42%;
-    transform: translate(-50%, -50%);
-    background: radial-gradient(circle, var(--accent) 0%, rgba(255,60,60,0.10) 35%, rgba(0,0,0,0) 70%);
-    filter: blur(34px);
-    opacity: 0.22;
   }
 
   .container{
@@ -92,7 +67,6 @@
     letter-spacing: 0.6px;
   }
 
-  /* Slight glass card for the start section */
   .start-card{
     margin: 0 auto 18px;
     width: min(640px, 92vw);
@@ -101,7 +75,6 @@
     background: var(--panel);
     border: 1px solid var(--panelBorder);
     backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
   }
 
   .start{
@@ -143,16 +116,14 @@
     margin: 20px 0;
   }
 
-  /* Soft panel behind each number for readability */
   .time-wrap{
     display: inline-block;
     padding: 12px 18px;
     border-radius: 18px;
-    background: rgba(255,255,255,0.04);
+    background: rgba(255,255,255,0.045);
     border: 1px solid rgba(255,255,255,0.08);
     backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.35);
   }
 
   .time{
@@ -187,7 +158,6 @@
   .author{
     margin-top: 12px;
     font-size: 0.95rem;
-    font-style: normal;
     color: var(--muted2);
     letter-spacing: 0.4px;
   }
@@ -198,8 +168,6 @@
     .time.days{ font-size: 2.7rem; }
     .quote{ font-size: 1.0rem; }
     .ksa-now-inline{ font-size: 0.88rem; }
-    .time-wrap{ padding: 11px 16px; border-radius: 16px; }
-    .start-card{ border-radius: 14px; }
   }
 </style>
 </head>
@@ -207,7 +175,6 @@
 <body>
 
 <div class="theme-layer" aria-hidden="true"></div>
-<div class="accent-glow" aria-hidden="true"></div>
 
 <div class="container">
   <h1>The Count</h1>
@@ -226,30 +193,22 @@
 
   <div class="metrics">
     <div class="metric">
-      <div class="time-wrap">
-        <div class="time days" id="days">0</div>
-      </div>
+      <div class="time-wrap"><div class="time days" id="days">0</div></div>
       <div class="label">Days</div>
     </div>
 
     <div class="metric">
-      <div class="time-wrap">
-        <div class="time" id="hours">0</div>
-      </div>
+      <div class="time-wrap"><div class="time" id="hours">0</div></div>
       <div class="label">Hours</div>
     </div>
 
     <div class="metric">
-      <div class="time-wrap">
-        <div class="time" id="minutes">0</div>
-      </div>
+      <div class="time-wrap"><div class="time" id="minutes">0</div></div>
       <div class="label">Minutes</div>
     </div>
 
     <div class="metric">
-      <div class="time-wrap">
-        <div class="time" id="seconds">0</div>
-      </div>
+      <div class="time-wrap"><div class="time" id="seconds">0</div></div>
       <div class="label">Seconds</div>
     </div>
   </div>
@@ -261,7 +220,6 @@
 </div>
 
 <script>
-  // Start: 09 Feb 2026, 12:30 AST (UTC+3) = 09 Feb 2026, 09:30 UTC
   const startTime = Date.UTC(2026, 1, 9, 9, 30, 0);
 
   const ksaTimeFormatter = new Intl.DateTimeFormat("en-GB", {
@@ -281,34 +239,22 @@
 
   function updateKsaDateTime() {
     const now = new Date();
-    const timeText = ksaTimeFormatter.format(now);
-    const dateText = ksaDateFormatter.format(now);
-
-    document.querySelector("#ksaNowLine strong").textContent = timeText;
-    document.getElementById("ksaDate").textContent = dateText;
+    document.querySelector("#ksaNowLine strong").textContent = ksaTimeFormatter.format(now);
+    document.getElementById("ksaDate").textContent = ksaDateFormatter.format(now);
   }
 
   function updateTimer() {
-    const nowUtc = Date.now();
-    const diffMs = nowUtc - startTime;
-
-    if (diffMs < 0) {
-      document.getElementById("days").textContent = "Not started";
-      document.getElementById("hours").textContent = "";
-      document.getElementById("minutes").textContent = "";
-      document.getElementById("seconds").textContent = "";
-      return;
-    }
+    const diffMs = Date.now() - startTime;
+    if (diffMs < 0) return;
 
     const totalSeconds = Math.floor(diffMs / 1000);
-
     document.getElementById("days").textContent = Math.floor(totalSeconds / 86400);
     document.getElementById("hours").textContent = Math.floor((totalSeconds % 86400) / 3600);
     document.getElementById("minutes").textContent = Math.floor((totalSeconds % 3600) / 60);
     document.getElementById("seconds").textContent = totalSeconds % 60;
   }
 
-  function tick() {
+  function tick(){
     updateKsaDateTime();
     updateTimer();
   }
@@ -319,4 +265,5 @@
 
 </body>
 </html>
+
 
