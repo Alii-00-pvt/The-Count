@@ -6,116 +6,115 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-  body {
+  :root{
+    --bg: #000000;
+    --text: #ffffff;
+    --muted: rgba(255,255,255,0.72);
+    --muted2: rgba(255,255,255,0.55);
+  }
+
+  body{
     margin: 0;
     min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    background: #000000;
-    color: #ffffff;
+    background: var(--bg);
+    color: var(--text);
     text-align: center;
   }
 
-  .container {
-    max-width: 700px;
-    padding: 40px 20px;
-    display: none;
+  .container{
+    width: min(720px, 92vw);
+    padding: 44px 18px 46px;
   }
 
-  h1 {
+  h1{
+    margin: 0 0 18px;
     font-weight: 600;
-    letter-spacing: 1px;
-    margin-bottom: 20px;
-    font-size: 2.2rem;
+    font-size: 1.9rem;
+    letter-spacing: 0.6px;
   }
 
-  .start {
-    margin-bottom: 42px;
+  .start{
+    margin: 0 0 34px;
     font-size: 0.95rem;
-    line-height: 1.45;
-    opacity: 0.85;
+    line-height: 1.55;
+    color: var(--muted);
   }
 
-  .start strong {
+  .start strong{
+    color: var(--text);
     font-weight: 600;
   }
 
-  .format-note {
+  .format-note{
     margin-top: 6px;
-    font-size: 0.8rem;
-    opacity: 0.7;
+    font-size: 0.82rem;
+    color: var(--muted2);
+    letter-spacing: 0.2px;
+  }
+
+  .metric{
+    margin: 20px 0;
+  }
+
+  .time{
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum" 1;
+    font-weight: 650;
+    font-size: 2.55rem;
+    line-height: 1.05;
+    margin: 0;
+  }
+
+  .time.days{
+    font-size: 2.95rem;
+  }
+
+  .label{
+    margin-top: 8px;
+    font-size: 0.78rem;
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+    color: var(--muted2);
+  }
+
+  .quote{
+    margin-top: 52px;
+    font-size: 1.05rem;
+    line-height: 1.65;
+    font-style: italic;
+    color: var(--muted);
+  }
+
+  .author{
+    margin-top: 12px;
+    font-size: 0.95rem;
+    font-style: normal;
+    color: var(--muted2);
     letter-spacing: 0.4px;
   }
 
-  .time {
-    font-size: 2.3rem;
-    margin: 18px 0 4px;
-    font-weight: 600;
-  }
-
-  .time.days {
-    font-size: 2.7rem;
-  }
-
-  .label {
-    font-size: 0.8rem;
-    margin-bottom: 16px;
-    letter-spacing: 1.3px;
-    text-transform: uppercase;
-    opacity: 0.7;
-  }
-
-  .quote {
-    margin-top: 60px;
-    font-size: 1.05rem;
-    line-height: 1.6;
-    font-style: italic;
-    opacity: 0.85;
-  }
-
-  .author {
-    margin-top: 14px;
-    font-size: 0.95rem;
-    opacity: 0.75;
-    letter-spacing: 0.5px;
-  }
-
-  .ksa-now {
+  .ksa-now{
     position: fixed;
-    top: 18px;
-    right: 18px;
+    top: 16px;
+    right: 16px;
     font-size: 0.9rem;
-    letter-spacing: 0.5px;
-    opacity: 0.85;
-    text-align: right;
+    letter-spacing: 0.3px;
+    color: var(--muted);
     white-space: nowrap;
+    text-align: right;
   }
 
-  .lock {
-    position: fixed;
-    inset: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .password-input {
-    padding: 14px 18px;
-    font-size: 16px;
-    border-radius: 4px;
-    border: 1px solid rgba(255,255,255,0.4);
-    outline: none;
-    background: #000000;
-    color: #ffffff;
-    text-align: center;
-    letter-spacing: 2px;
-  }
-
-  .password-input::placeholder {
-    color: rgba(255,255,255,0.6);
-    letter-spacing: normal;
+  /* Mobile tightening */
+  @media (max-width: 420px){
+    h1{ font-size: 1.75rem; }
+    .time{ font-size: 2.35rem; }
+    .time.days{ font-size: 2.7rem; }
+    .quote{ font-size: 1.0rem; }
+    .ksa-now{ top: 12px; right: 12px; font-size: 0.86rem; }
   }
 </style>
 </head>
@@ -124,11 +123,7 @@
 
 <div class="ksa-now" id="ksaNow">KSA (AST): --:--:--</div>
 
-<div class="lock" id="lock">
-  <input type="password" class="password-input" id="pw" placeholder="Enter password" />
-</div>
-
-<div class="container" id="content">
+<div class="container">
   <h1>The Count</h1>
 
   <div class="start">
@@ -137,17 +132,25 @@
     <div class="format-note">Times are shown in 24-hour format</div>
   </div>
 
-  <div class="time days" id="days">0</div>
-  <div class="label">Days</div>
+  <div class="metric">
+    <div class="time days" id="days">0</div>
+    <div class="label">Days</div>
+  </div>
 
-  <div class="time" id="hours">0</div>
-  <div class="label">Hours</div>
+  <div class="metric">
+    <div class="time" id="hours">0</div>
+    <div class="label">Hours</div>
+  </div>
 
-  <div class="time" id="minutes">0</div>
-  <div class="label">Minutes</div>
+  <div class="metric">
+    <div class="time" id="minutes">0</div>
+    <div class="label">Minutes</div>
+  </div>
 
-  <div class="time" id="seconds">0</div>
-  <div class="label">Seconds</div>
+  <div class="metric">
+    <div class="time" id="seconds">0</div>
+    <div class="label">Seconds</div>
+  </div>
 
   <div class="quote">
     “You are either a product of your struggles, or a victim of your desires.”
@@ -156,28 +159,6 @@
 </div>
 
 <script>
-  // Set your password here
-  const correctPassword = "mrx";
-
-  const pwInput = document.getElementById("pw");
-  const lock = document.getElementById("lock");
-  const content = document.getElementById("content");
-
-  pwInput.focus();
-
-  pwInput.addEventListener("keydown", function (e) {
-    if (e.key === "Enter") {
-      if (pwInput.value !== correctPassword) {
-        alert("Incorrect password.");
-        pwInput.value = "";
-        pwInput.focus();
-      } else {
-        lock.style.display = "none";
-        content.style.display = "block";
-      }
-    }
-  });
-
   // Start: 09 Feb 2026, 12:30 AST (UTC+3) = 09 Feb 2026, 09:30 UTC
   const startTime = Date.UTC(2026, 1, 9, 9, 30, 0);
 
@@ -224,4 +205,3 @@
 
 </body>
 </html>
-
