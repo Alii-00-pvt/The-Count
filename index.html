@@ -29,7 +29,6 @@
     background: linear-gradient(180deg, var(--bgTop), var(--bgMid), var(--bgBottom));
     color: var(--text);
     text-align: center;
-    overflow: hidden;
   }
 
   .theme-layer{
@@ -42,18 +41,8 @@
       radial-gradient(900px 600px at 80% 80%, rgba(255,255,255,0.025), transparent 65%);
   }
 
-  .theme-layer::after{
-    content: "";
-    position: absolute;
-    inset: 0;
-    opacity: 0.035;
-    background-image:
-      repeating-linear-gradient(0deg, rgba(255,255,255,0.04), rgba(255,255,255,0.04) 1px, transparent 2px, transparent 6px);
-    mix-blend-mode: overlay;
-  }
-
   .container{
-    width: min(720px, 92vw);
+    width: min(900px, 94vw);
     padding: 44px 18px 46px;
     position: relative;
     z-index: 1;
@@ -92,15 +81,13 @@
     margin-top: 6px;
     font-size: 0.82rem;
     color: var(--muted2);
-    letter-spacing: 0.2px;
   }
 
   .now-list{
     margin-top: 12px;
     display: grid;
-    gap: 8px;
+    gap: 6px;
     font-size: 0.92rem;
-    letter-spacing: 0.15px;
     color: var(--muted);
   }
 
@@ -109,68 +96,75 @@
     font-weight: 600;
   }
 
+  /* ===== RESTORED LAYOUT ===== */
+
   .metrics{
-    margin-top: 18px;
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 60px;
+    flex-wrap: wrap;
   }
 
   .metric{
-    margin: 20px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
   .time-wrap{
-    display: inline-block;
-    padding: 12px 18px;
-    border-radius: 18px;
+    padding: 18px 24px;
+    border-radius: 20px;
     background: rgba(255,255,255,0.045);
     border: 1px solid rgba(255,255,255,0.08);
     backdrop-filter: blur(10px);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.35);
   }
 
   .time{
     font-variant-numeric: tabular-nums;
-    font-feature-settings: "tnum" 1;
     font-weight: 650;
-    font-size: 2.55rem;
-    line-height: 1.05;
+    font-size: 2.8rem;
     margin: 0;
   }
 
   .time.days{
-    font-size: 2.95rem;
+    font-size: 3.2rem;
   }
 
   .label{
-    margin-top: 10px;
+    margin-top: 12px;
     font-size: 0.78rem;
     letter-spacing: 1.6px;
     text-transform: uppercase;
     color: var(--muted2);
   }
 
-  @media (max-width: 420px){
-    h1{ font-size: 1.75rem; }
-    .time{ font-size: 2.35rem; }
-    .time.days{ font-size: 2.7rem; }
-    .now-list{ font-size: 0.88rem; }
+  /* Mobile stacking only */
+  @media (max-width: 600px){
+    .metrics{
+      gap: 28px;
+    }
   }
 </style>
 </head>
 
 <body>
 
-<div class="theme-layer" aria-hidden="true"></div>
+<div class="theme-layer"></div>
 
 <div class="container">
   <h1>The Count</h1>
-<div class="start">
-  Start Date and Time (Manchester, UK):<br>
-  <strong>13 February 2026, 15:46 (UK time)</strong>
-  <div class="format-note">Times are shown in 24-hour format</div>
-</div>
 
+  <div class="start-card">
+    <div class="start">
+      Start Date and Time (Manchester, UK):<br>
+      <strong>13 February 2026, 15:46 (UK time)</strong>
+      <div class="format-note">Times are shown in 24-hour format</div>
+    </div>
 
-    <div class="now-list" aria-label="Current local times">
+    <div class="now-list">
       <div class="now-item" id="nowManchester">Manchester, UK: <strong>00:00:00</strong> • <span>01 January 1970</span></div>
       <div class="now-item" id="nowJeddah">Jeddah, Saudi Arabia: <strong>00:00:00</strong> • <span>01 January 1970</span></div>
       <div class="now-item" id="nowHyderabad">Hyderabad, India: <strong>00:00:00</strong> • <span>01 January 1970</span></div>
@@ -201,73 +195,52 @@
 </div>
 
 <script>
-  /*
-    Timer start point:
-    13 February 2026, 15:46 Manchester, UK.
-
-    Note:
-    For this specific date in February, Manchester is on GMT (UTC+0),
-    so 15:46 local equals 15:46 UTC.
-  */
   const startTime = Date.UTC(2026, 1, 13, 15, 46, 0);
 
   function makeFormatters(timeZone){
-    const timeFormatter = new Intl.DateTimeFormat("en-GB", {
-      timeZone,
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-      hour12: false
-    });
-
-    const dateFormatter = new Intl.DateTimeFormat("en-GB", {
-      timeZone,
-      day: "2-digit",
-      month: "long",
-      year: "numeric"
-    });
-
-    return { timeFormatter, dateFormatter };
+    return {
+      time: new Intl.DateTimeFormat("en-GB", {
+        timeZone,
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false
+      }),
+      date: new Intl.DateTimeFormat("en-GB", {
+        timeZone,
+        day: "2-digit",
+        month: "long",
+        year: "numeric"
+      })
+    };
   }
 
   const manchester = makeFormatters("Europe/London");
   const jeddah = makeFormatters("Asia/Riyadh");
   const hyderabad = makeFormatters("Asia/Kolkata");
 
-  function setNowLine(elementId, label, fmt){
+  function updateClock(id, fmt){
     const now = new Date();
-    const el = document.getElementById(elementId);
-    const timeText = fmt.timeFormatter.format(now);
-    const dateText = fmt.dateFormatter.format(now);
-
-    const strong = el.querySelector("strong");
-    const span = el.querySelector("span");
-    strong.textContent = timeText;
-    span.textContent = dateText;
+    const el = document.getElementById(id);
+    el.querySelector("strong").textContent = fmt.time.format(now);
+    el.querySelector("span").textContent = fmt.date.format(now);
   }
 
-  function updateTimer() {
+  function updateTimer(){
     const diffMs = Date.now() - startTime;
+    if (diffMs < 0) return;
 
-    if (diffMs < 0) {
-      document.getElementById("days").textContent = "Not started";
-      document.getElementById("hours").textContent = "";
-      document.getElementById("minutes").textContent = "";
-      document.getElementById("seconds").textContent = "";
-      return;
-    }
-
-    const totalSeconds = Math.floor(diffMs / 1000);
-    document.getElementById("days").textContent = Math.floor(totalSeconds / 86400);
-    document.getElementById("hours").textContent = Math.floor((totalSeconds % 86400) / 3600);
-    document.getElementById("minutes").textContent = Math.floor((totalSeconds % 3600) / 60);
-    document.getElementById("seconds").textContent = totalSeconds % 60;
+    const total = Math.floor(diffMs / 1000);
+    document.getElementById("days").textContent = Math.floor(total / 86400);
+    document.getElementById("hours").textContent = Math.floor((total % 86400) / 3600);
+    document.getElementById("minutes").textContent = Math.floor((total % 3600) / 60);
+    document.getElementById("seconds").textContent = total % 60;
   }
 
   function tick(){
-    setNowLine("nowManchester", "Manchester, UK", manchester);
-    setNowLine("nowJeddah", "Jeddah, Saudi Arabia", jeddah);
-    setNowLine("nowHyderabad", "Hyderabad, India", hyderabad);
+    updateClock("nowManchester", manchester);
+    updateClock("nowJeddah", jeddah);
+    updateClock("nowHyderabad", hyderabad);
     updateTimer();
   }
 
