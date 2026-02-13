@@ -95,14 +95,16 @@
     letter-spacing: 0.2px;
   }
 
-  .ksa-now-inline{
-    margin: 12px 0 0;
+  .now-list{
+    margin-top: 12px;
+    display: grid;
+    gap: 8px;
     font-size: 0.92rem;
-    letter-spacing: 0.25px;
+    letter-spacing: 0.15px;
     color: var(--muted);
   }
 
-  .ksa-now-inline strong{
+  .now-item strong{
     color: var(--text);
     font-weight: 600;
   }
@@ -150,7 +152,7 @@
     h1{ font-size: 1.75rem; }
     .time{ font-size: 2.35rem; }
     .time.days{ font-size: 2.7rem; }
-    .ksa-now-inline{ font-size: 0.88rem; }
+    .now-list{ font-size: 0.88rem; }
   }
 </style>
 </head>
@@ -164,13 +166,15 @@
 
   <div class="start-card">
     <div class="start">
-      Start Date & Time (KSA):<br>
-      <strong>09 February 2026, 12:30 AST</strong>
+      Start Date and Time (Manchester, UK):<br>
+      <strong>13 February 2026, 15:46 (BST)</strong>
       <div class="format-note">Times are shown in 24-hour format</div>
     </div>
 
-    <div class="ksa-now-inline" id="ksaNowLine">
-      KSA (AST): <strong>00:00:00</strong> • <span id="ksaDate">01 January 1970</span>
+    <div class="now-list" aria-label="Current local times">
+      <div class="now-item" id="nowManchester">Manchester, UK: <strong>00:00:00</strong> • <span>01 January 1970</span></div>
+      <div class="now-item" id="nowJeddah">Jeddah, Saudi Arabia: <strong>00:00:00</strong> • <span>01 January 1970</span></div>
+      <div class="now-item" id="nowHyderabad">Hyderabad, India: <strong>00:00:00</strong> • <span>01 January 1970</span></div>
     </div>
   </div>
 
@@ -198,32 +202,61 @@
 </div>
 
 <script>
-  const startTime = Date.UTC(2026, 1, 9, 9, 30, 0);
+  /*
+    Timer start point:
+    13 February 2026, 15:46 Manchester, UK.
 
-  const ksaTimeFormatter = new Intl.DateTimeFormat("en-GB", {
-    timeZone: "Asia/Riyadh",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    hour12: false
-  });
+    Note:
+    For this specific date in February, Manchester is on GMT (UTC+0),
+    so 15:46 local equals 15:46 UTC.
+  */
+  const startTime = Date.UTC(2026, 1, 13, 15, 46, 0);
 
-  const ksaDateFormatter = new Intl.DateTimeFormat("en-GB", {
-    timeZone: "Asia/Riyadh",
-    day: "2-digit",
-    month: "long",
-    year: "numeric"
-  });
+  function makeFormatters(timeZone){
+    const timeFormatter = new Intl.DateTimeFormat("en-GB", {
+      timeZone,
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false
+    });
 
-  function updateKsaDateTime() {
+    const dateFormatter = new Intl.DateTimeFormat("en-GB", {
+      timeZone,
+      day: "2-digit",
+      month: "long",
+      year: "numeric"
+    });
+
+    return { timeFormatter, dateFormatter };
+  }
+
+  const manchester = makeFormatters("Europe/London");
+  const jeddah = makeFormatters("Asia/Riyadh");
+  const hyderabad = makeFormatters("Asia/Kolkata");
+
+  function setNowLine(elementId, label, fmt){
     const now = new Date();
-    document.querySelector("#ksaNowLine strong").textContent = ksaTimeFormatter.format(now);
-    document.getElementById("ksaDate").textContent = ksaDateFormatter.format(now);
+    const el = document.getElementById(elementId);
+    const timeText = fmt.timeFormatter.format(now);
+    const dateText = fmt.dateFormatter.format(now);
+
+    const strong = el.querySelector("strong");
+    const span = el.querySelector("span");
+    strong.textContent = timeText;
+    span.textContent = dateText;
   }
 
   function updateTimer() {
     const diffMs = Date.now() - startTime;
-    if (diffMs < 0) return;
+
+    if (diffMs < 0) {
+      document.getElementById("days").textContent = "Not started";
+      document.getElementById("hours").textContent = "";
+      document.getElementById("minutes").textContent = "";
+      document.getElementById("seconds").textContent = "";
+      return;
+    }
 
     const totalSeconds = Math.floor(diffMs / 1000);
     document.getElementById("days").textContent = Math.floor(totalSeconds / 86400);
@@ -233,7 +266,9 @@
   }
 
   function tick(){
-    updateKsaDateTime();
+    setNowLine("nowManchester", "Manchester, UK", manchester);
+    setNowLine("nowJeddah", "Jeddah, Saudi Arabia", jeddah);
+    setNowLine("nowHyderabad", "Hyderabad, India", hyderabad);
     updateTimer();
   }
 
@@ -243,6 +278,3 @@
 
 </body>
 </html>
-
-
-
